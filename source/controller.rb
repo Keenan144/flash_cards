@@ -3,7 +3,7 @@ require_relative 'model.rb'
 module TXTParser
 extend self
 
-  def read(file_source='text.txt')
+  def read(file_source)
     superstring = File.read(file_source).split("\n")
     default_format = []
     superstring.each_slice(3) do |card|
@@ -14,25 +14,31 @@ extend self
   end
 end
 
-default_format = TXTParser.read
-
-
-
-
 
 
 module TaskController
 include TXTParser
 include ModelInterface
+extend self
 
  # here comes all the triggering of the commands deeper in the application.
  # just the triggering, its not the actual input "interface" where user inputs commands.
  # I made a new class for that down there, called ControlPanel, were going to make instance of that (so I made taskcontroller, which you named Controller before a module, instead of class.)
 
+  def generate_deck(file_source)
+  #View.welcome_message
+  default_format = TXTParser.read(file_source)
+  deck_format = ModelInterface.to_deck_format(default_format)
+  @card_deck = Deck.new(deck_format)
+  end
+
+
   def card_to_default(card)
     ["#{card.definition}", "#{card.term}"]
   end
+
  # def default_to_card () #array: [def, term]
+
   def check(guess, card)
     card.term == guess
   end
@@ -43,15 +49,13 @@ end
 class ControlPanel
 include TaskController
 
+  def initialize(file_source)
+   TaskController.generate_deck(file_source)
+  end
+
 # all user input will be done here. Probably going to make a case switch over here or something.
 
-
 end
-
-
-puts
-ModelInterface.to_deck_format(TXTParser.read)[-1]
-puts "above this ine"
 
 
 ## Drivercode isnt working anymore because of line 63: instance of something that is now a module. We have to rewrite
@@ -59,9 +63,9 @@ puts "above this ine"
 
 
 
-# DRIVER TESTS
-puts "TESTING CONTROLLER"
-puts
+# # DRIVER TESTS
+# puts "TESTING CONTROLLER"
+# puts
 # puts "TESTING card_to_default (Card)"
 # controller = TaskController.new
 # card1 = Card.new({term: "term1", definition: "definition1"})
