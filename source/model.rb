@@ -6,6 +6,11 @@ extend self
         { definition: termdef[0], term: termdef[1] }
       end
   end
+
+  def to_default_format(card)
+    ["#{card.definition}", "#{card.term}"]
+  end
+
 end
 
 

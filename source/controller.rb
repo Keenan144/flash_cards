@@ -1,3 +1,4 @@
+
 require_relative 'model.rb'
 
 module TXTParser
@@ -20,6 +21,7 @@ module TaskController
 include TXTParser
 include ModelInterface
 extend self
+attr_accessor :card_deck, :times_attempted
 
  # here comes all the triggering of the commands deeper in the application.
  # just the triggering, its not the actual input "interface" where user inputs commands.
@@ -32,15 +34,28 @@ extend self
   @card_deck = Deck.new(deck_format)
   end
 
-
-  def card_to_default(card)
-    ["#{card.definition}", "#{card.term}"]
+  def startgame
+    card_to_check = ModelInterface.to_default_format(@card_deck.pick_rand_card)
+    @times_attempted = 1
+    p card_to_check[0]
+    check(gets.chomp, card_to_check )
   end
 
- # def default_to_card () #array: [def, term]
 
-  def check(guess, card)
-    card.term == guess
+  def check(guess, card_to_check)
+    times_attempted = 0
+    if card_to_check[1] == guess
+      puts "nice!" #some View.command
+      startgame
+    elsif @times_attempted < 3
+      @times_attempted += 1
+      puts "nope, try again"
+      check(gets.chomp, card_to_check )
+    else
+      puts "mission failed, because you tried #{@times_attempted} times!"
+      puts "The answer was: #{card_to_check[1]}"
+      startgame
+    end
   end
 
 end
@@ -50,7 +65,14 @@ class ControlPanel
 include TaskController
 
   def initialize(file_source)
-   TaskController.generate_deck(file_source)
+   generate_deck(file_source)
+  end
+
+  def execute(command)
+    case command
+      when "start game"
+        startgame
+    end
   end
 
 # all user input will be done here. Probably going to make a case switch over here or something.
