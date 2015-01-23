@@ -29,6 +29,7 @@ attr_accessor :card_deck, :times_attempted
  # I made a new class for that down there, called ControlPanel, were going to make instance of that (so I made taskcontroller, which you named Controller before a module, instead of class.)
 
   def generate_deck(file_source)
+  View.clear_screen!
   View.welcome
   default_format = TXTParser.read(file_source)
   deck_format = ModelInterface.to_deck_format(default_format)
@@ -38,16 +39,17 @@ attr_accessor :card_deck, :times_attempted
   def startgame
     card_to_check = ModelInterface.to_default_format(@card_deck.pick_rand_card)
     @times_attempted = 1
-    p card_to_check[0]
+    View.definition(card_to_check[0])
     check(gets.chomp, card_to_check )
   end
 
   def check(guess, card_to_check)
     times_attempted = 0
-    if guess = "abort"
+    if guess == "abort"
       View.end
-    else card_to_check[1] == guess
+    elsif card_to_check[1] == guess
       View.right
+      View.loading
       startgame
     elsif @times_attempted < 3
       @times_attempted += 1
@@ -55,6 +57,7 @@ attr_accessor :card_deck, :times_attempted
       check(gets.chomp, card_to_check )
     else
       View.wrong(card_to_check[1])
+      View.loading
       startgame
     end
   end
@@ -80,23 +83,23 @@ end
 
 
 
-# DRIVER TESTS
-puts "TESTING CONTROLLER"
-puts
-puts "TESTING card_to_default (Card)"
-controller = ControlPanel.new
-card1 = Card.new({term: "term1", definition: "definition1"})
-card2 = Card.new({term: "term2", definition: "definition2"})
-card3 = Card.new({term: "term3", definition: "definition3"})
+# # DRIVER TESTS
+# puts "TESTING CONTROLLER"
+# puts
+# puts "TESTING card_to_default (Card)"
+# controller = ControlPanel.new
+# card1 = Card.new({term: "term1", definition: "definition1"})
+# card2 = Card.new({term: "term2", definition: "definition2"})
+# card3 = Card.new({term: "term3", definition: "definition3"})
 
-p controller.card_to_default(card1) == ["definition1", "term1"]
-p controller.card_to_default(card2) == ["definition2", "term2"]
-p controller.card_to_default(card3) == ["definition3", "term3"]
+# p controller.card_to_default(card1) == ["definition1", "term1"]
+# p controller.card_to_default(card2) == ["definition2", "term2"]
+# p controller.card_to_default(card3) == ["definition3", "term3"]
 
-puts "TESTING check(string, Card)"
-p controller.check("term1", card1) == true
-p controller.check("term3", card2) == false
-p controller.check("term3", card3) == true
+# puts "TESTING check(string, Card)"
+# p controller.check("term1", card1) == true
+# p controller.check("term3", card2) == false
+# p controller.check("term3", card3) == true
 
 
 

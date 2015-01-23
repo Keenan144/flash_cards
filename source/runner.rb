@@ -4,4 +4,3 @@ controller = ControlPanel.new('text.txt')
 # p controller
 
 controller.execute("start game")
-
