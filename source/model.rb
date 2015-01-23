@@ -52,6 +52,4 @@ rand_card2 = deck1.pick_rand_card
 p test_cases.include?({term: "#{rand_card1.term}", definition: "#{rand_card1.definition}"})
 p test_cases.include?({term: "#{rand_card2.term}", definition: "#{rand_card2.definition}"})
 
-#[Card] => {term: term, description: description}
-
 

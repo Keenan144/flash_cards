@@ -28,7 +28,6 @@ class Controller
   def check(guess, card)
     card.term == guess
   end
-
 end
 
 # DRIVER TESTS
