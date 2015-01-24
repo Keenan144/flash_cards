@@ -7,24 +7,24 @@ extend self
       end
   end
 
-  def to_default_format(card)
-    ["#{card.definition}", "#{card.term}"]
-  end
-
 end
 
 
 class Deck
   attr_reader :cards
-  def initialize card_list #array of hashes
-    @cards = []
-    card_list.each do |card|
-      @cards << Card.new(card)
-    end
+  def initialize(card_list)
+    @cards = card_list
+    # @cards = card_list.map! do |default_format_card|
+    #   Card.new(default_format_card)
+    # end
+    # # @cards = []
+    # # card_list.each do |card|
+    # #   c Card.new(card)
+    # # end
   end
 
   def pick_rand_card
-    @cards.sample(1)[0] # works, but can by chance pick the same card
+    @cards.sample # works, but can by chance pick the same card
   end
 
   #input is array of hashes
@@ -34,37 +34,17 @@ class Deck
 end
 
 class Card
-  attr_reader :term, :definition
+  attr_reader(:term, :definition)
 
-  def initialize args
+  def initialize(args)
     @term = args[:term]
     @definition = args[:definition]
   end
+
+  def self.factory(card_list)
+      card_list.map! do |default_format_card|
+      Card.new(default_format_card)
+      end
+  end
 end
-
-# puts "TESTING CARD CREATION"
-# card1 = Card.new({term: "term", definition: "definition"})
-# card2 = Card.new({term: "term2", definition: "definition2"})
-# card3 = Card.new({term: "term3", definition: "definition3"})
-# card4 = Card.new({term: "term4", definition: "definition4"})
-
-# p card1.term == "term"
-# p card1.definition == "definition"
-# p card2.term == "term2"
-# p card2.definition == "definition2"
-# p card4.term == "term4"
-# p card4.definition == "definition4"
-
-# puts "TESTING DECK CREATION"
-# test_cases = [{term: "term", definition: "definition"},
-#               {term: "term2", definition: "definition2"},
-#               {term: "term3", definition: "definition3"}]
-
-# deck1 = Deck.new(test_cases)
-# rand_card1 = deck1.pick_rand_card
-# rand_card2 = deck1.pick_rand_card
-
-# p test_cases.include?({term: "#{rand_card1.term}", definition: "#{rand_card1.definition}"})
-# p test_cases.include?({term: "#{rand_card2.term}", definition: "#{rand_card2.definition}"})
-
 
